@@ -18,7 +18,7 @@ export function Scene() {
 
   return (
     <>
-      <color attach="background" args={["#f2f2f5"]} />
+      <color attach="background" args={["#895757"]} />
 
       <Center scale={[1, 1, 1]} front top>
         <Text3D
@@ -46,12 +46,12 @@ export function Scene() {
             chromaticAberration={5}
             anisotropy={0.3}
             roughness={0}
-            distortion={0.5}
-            distortionScale={0.11}
+            distortion={0.9}
+            distortionScale={0.6}
             temporalDistortion={0}
             ior={1.5}
-            color="#ff9cf5"
-            gColor="#ff7eb3"
+            color="#3fde00"
+            gColor="#e6ff7d"
             background={texture}
           />
         </Text3D>
