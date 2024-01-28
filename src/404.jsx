@@ -1,22 +1,17 @@
-import { RGBELoader } from "three-stdlib";
-import { Canvas, useLoader } from "@react-three/fiber";
+import { useLoader } from "@react-three/fiber";
 import {
   Center,
   Text3D,
-  Instance,
-  Instances,
   Environment,
   Lightformer,
-  OrbitControls,
   RandomizedLight,
   AccumulativeShadows,
   MeshTransmissionMaterial,
 } from "@react-three/drei";
+import { RGBELoader } from "three-stdlib";
 import HDRtexture from "./assets/aerodynamics_workshop_1k.hdr"
 import font from "./assets/Inter_Medium_Regular.json"
 
-// import { useControls, button } from 'leva'
-// import { EffectComposer, HueSaturation, BrightnessContrast } from '@react-three/postprocessing'
 
 export function Scene() {
   const texture = useLoader(RGBELoader, HDRtexture);
@@ -25,12 +20,7 @@ export function Scene() {
     <>
       <color attach="background" args={["#f2f2f5"]} />
 
-      {/** The text and the grid */}
-      {/* <Text 
-      rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
-      </Text> */}
-
-      <Center scale={[0.8, 1, 1]} front top>
+      <Center scale={[1, 1, 1]} front top>
         <Text3D
           castShadow
           bevelEnabled
