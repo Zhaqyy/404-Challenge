@@ -9,7 +9,7 @@ import {
   MeshTransmissionMaterial,
 } from "@react-three/drei";
 import { RGBELoader } from "three-stdlib";
-import HDRtexture from "./assets/aerodynamics_workshop_1k.hdr"
+import HDRtexture from "./assets/studio.hdr"
 import font from "./assets/Inter_Medium_Regular.json"
 
 
@@ -57,7 +57,6 @@ export function Scene() {
         </Text3D>
       </Center>
 
-      {/** The environment is just a bunch of shapes emitting light. This is needed for the clear-coat */}
       <Environment resolution={32}>
         <group rotation={[-Math.PI / 4, -0.3, 0]}>
           <Lightformer
@@ -119,11 +118,3 @@ export function Scene() {
     </>
   );
 }
-
-// function Text({ children }) {
-//   return (
-//     <>
-//       <group></group>
-//     </>
-//   );
-// }
