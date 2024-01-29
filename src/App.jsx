@@ -1,13 +1,13 @@
 import "./App.css"
 import React, { useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
-import { Box, OrbitControls } from "@react-three/drei";
+import { Box, OrbitControls, Preload } from "@react-three/drei";
 import {Scene} from "./404";
 
 
 const App = () => {
   return (
-    <Canvas shadows camera={{ position: [0, 0, 10] }} gl={{ preserveDrawingBuffer: true }}>
+    <Canvas shadows camera={{ position: [0, 5, 10] }} gl={{ preserveDrawingBuffer: true }}>
        <OrbitControls
         zoomSpeed={0.5}
         minZoom={40}
@@ -18,6 +18,7 @@ const App = () => {
         // maxPolarAngle={Math.PI / 3}
       />
       <Scene />
+      <Preload all />
     </Canvas>
 
   );

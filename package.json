@@ -13,6 +13,8 @@
     "@react-three/drei": "^9.96.5",
     "@react-three/fiber": "^8.15.15",
     "@react-three/postprocessing": "^2.15.12",
+    "@react-three/rapier": "^1.2.1",
+    "r3f-perf": "^7.1.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "three": "^0.160.1"

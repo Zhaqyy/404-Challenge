@@ -8,6 +8,7 @@ import {
   AccumulativeShadows,
   MeshTransmissionMaterial,
 } from "@react-three/drei";
+import { Perf } from "r3f-perf";
 import { RGBELoader } from "three-stdlib";
 import HDRtexture from "./assets/studio.hdr"
 import font from "./assets/Inter_Medium_Regular.json"
@@ -18,6 +19,7 @@ export function Scene() {
 
   return (
     <>
+     <Perf position="top-left" />
       <color attach="background" args={["#895757"]} />
 
       <Center scale={[1, 1, 1]} front top>
