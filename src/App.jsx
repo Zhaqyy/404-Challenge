@@ -1,14 +1,18 @@
-import "./App.css"
+import "./App.css";
 import React, { useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Box, OrbitControls, Preload } from "@react-three/drei";
-import {Scene} from "./404";
-
+import { Scene } from "./404";
 
 const App = () => {
   return (
-    <Canvas shadows camera={{ position: [0, 5, 10] }} gl={{ preserveDrawingBuffer: true }}>
-       <OrbitControls
+    <Canvas
+      shadows
+      orthographic
+      camera={{ position: [0, 5, 10], zoom: 50 }}
+      gl={{ preserveDrawingBuffer: true }}
+    >
+      <OrbitControls
         zoomSpeed={0.5}
         minZoom={40}
         maxZoom={140}
@@ -20,7 +24,6 @@ const App = () => {
       <Scene />
       <Preload all />
     </Canvas>
-
   );
 };
 
