@@ -16,57 +16,39 @@ import HDRtexture from "./assets/studio.hdr";
 import font from "./assets/Inter_Medium_Regular.json";
 
 export function Scene() {
+  let properties = {
+    samples: 16,
+    resolution: 1024,
+    backside: true,
+    backsideThickness: 0.3,
+    transmission: 1,
+    roughness: 0,
+    thickness: 0.3,
+    chromaticAberration: 5,
+    ior: 1.5,
+    anisotropy: 0.3,
+    clearcoat: 0,
+    clearcoatRoughness: 0.0,
+    distortion: 0.9,
+    distortionScale: 0.6,
+    temporalDistortion: 0,
+  };
+
   return (
     <>
       <Perf position="top-left" />
       <color attach="background" args={["#895757"]} />
 
-      {/* <Center scale={[1, 1, 1]} front top>
-        <Text3D
-          castShadow
-          bevelEnabled
-          font={font}
-          scale={5}
-          letterSpacing={-0.03}
-          height={0.25}
-          bevelSize={0.01}
-          bevelSegments={10}
-          curveSegments={128}
-          bevelThickness={0.01}
-        >
-          {"404"}
-          <MeshTransmissionMaterial
-            backside={true}
-            backsideThickness={0.3}
-            samples={16}
-            resolution={1024}
-            transmission={1}
-            clearcoat={0}
-            clearcoatRoughness={0.0}
-            thickness={0.3}
-            chromaticAberration={5}
-            anisotropy={0.3}
-            roughness={0}
-            distortion={0.9}
-            distortionScale={0.6}
-            temporalDistortion={0}
-            ior={1.5}
-            color="#3fde00"
-            gColor="#e6ff7d"
-            background={texture}
-          />
-        </Text3D>
-      </Center> */}
       <Physics gravity={[0, 0, 0]}>
+        <Char splitChar="4" position={[-7, 0, -4]} properties={properties} color={"#3fde00"} />
+        <Char splitChar="4" position={[7, 0, 2]} properties={properties} color={"#3fde00"} />
         <Char
-          splitChar="4"
-          position={[-7, 0, -2]}
-          // rotation={[-Math.PI / 2, 0, 0]}
-        />
-        <Char
-          splitChar="4"
-          position={[7, 0, 2]}
-          // rotation={[-Math.PI / 2, 0, 0]}
+          splitChar="0"
+          position={[0, 0, 2]}
+          scale= {1.5}
+          properties={(properties)}
+          color={"#3f57f1"}
+          rotation={[-Math.PI / 2, 0, 0]}
         />
       </Physics>
       <Environment resolution={32}>
@@ -77,21 +59,21 @@ export function Scene() {
             position={[0, 7, -7]}
             scale={[10, 10, 1]}
           />
-            <Lightformer
-              intensity={10}
-              position={[7, 3, 7]}
-              scale={[10, 10, 1]}
-            />
-            <Lightformer
-              intensity={10}
-              position={[-7, -3, 7]}
-              scale={[10, 10, 1]}
-            />
+          <Lightformer
+            intensity={10}
+            position={[7, 3, 7]}
+            scale={[10, 10, 1]}
+          />
+          <Lightformer
+            intensity={10}
+            position={[-7, -3, 7]}
+            scale={[10, 10, 1]}
+          />
         </group>
       </Environment>
 
       <AccumulativeShadows
-        frames={100}
+        frames={10}
         toneMapped={true}
         alphaTest={0.9}
         color={"#250d75"}
@@ -115,7 +97,7 @@ export function Scene() {
   );
 }
 
-function Char({ splitChar, ...props }) {
+function Char({ splitChar, color, properties, ...props }) {
   const texture = useLoader(RGBELoader, HDRtexture);
 
   // const main = useRef();
@@ -123,9 +105,7 @@ function Char({ splitChar, ...props }) {
 
   return (
     <RigidBody restitution={0.1} colliders="cuboid" {...props}>
-      <Center 
-      scale={[1, 1, 1]} front top
-      >
+      <Center scale={[1, 1, 1]} front top>
         <Text3D
           // onDoubleClick={(e) => (
           //   e.stopPropagation(), controls.fitToBox(main.current, true)
@@ -143,26 +123,7 @@ function Char({ splitChar, ...props }) {
         >
           {splitChar}
 
-          <MeshTransmissionMaterial
-            samples={16}
-            resolution={1024}
-            backside={true}
-            backsideThickness={0.3}
-            transmission={1}
-            roughness={0}
-            thickness={0.3}
-            chromaticAberration={5}
-            ior={1.5}
-            anisotropy={0.3}
-            clearcoat={0}
-            clearcoatRoughness={0.0}
-            distortion={0.9}
-            distortionScale={0.6}
-            temporalDistortion={0}
-            color="#3fde00"
-            gColor="#e6ff7d"
-            background={texture}
-          />
+          <MeshTransmissionMaterial {...properties} color={color} background={texture} />
         </Text3D>
       </Center>
     </RigidBody>
