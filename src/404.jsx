@@ -1,4 +1,5 @@
-import { useRef } from "react";
+import { useRef, useMemo } from "react";
+import * as THREE from "three";
 import { useLoader, useFrame, useThree } from "@react-three/fiber";
 import {
   Center,
@@ -10,7 +11,12 @@ import {
   MeshTransmissionMaterial,
 } from "@react-three/drei";
 import { Perf } from "r3f-perf";
-import { Physics, RigidBody, CuboidCollider } from "@react-three/rapier";
+import {
+  Physics,
+  RigidBody,
+  CuboidCollider,
+  BallCollider,
+} from "@react-three/rapier";
 import { RGBELoader } from "three-stdlib";
 import HDRtexture from "./assets/studio.hdr";
 import font from "./assets/Inter_Medium_Regular.json";
@@ -51,28 +57,29 @@ export function Scene() {
       <color attach="background" args={["#895757"]} />
 
       <Physics gravity={[0, 0, 0]}>
+        {/* <Pointer /> */}
         <Char
           splitChar="4"
-          position={[-7, 0, -4]}
+          position={[-7, 4, 0]}
           properties={properties}
           textProperties={textProperties}
           color={"#3fde00"}
         />
         <Char
           splitChar="4"
-          position={[7, 0, 2]}
+          position={[7, -4, 0]}
           properties={properties}
           textProperties={textProperties}
           color={"#3fde00"}
         />
         <Char
           splitChar="0"
-          position={[0, 0, 2]}
-          scale={[1.5, 1, 0.7]}
+          position={[0, 0, 0]}
+          scale={[1.5, 1.5, 0.7]}
           properties={properties}
           textProperties={textProperties}
           color={"#3f57f1"}
-          rotation={[-Math.PI / 2, 0, 0]}
+          // rotation={[-Math.PI / 2, 0, 0]}
         />
       </Physics>
       <Environment resolution={32}>
@@ -83,11 +90,7 @@ export function Scene() {
             position={[0, 7, -7]}
             scale={[10, 10, 1]}
           />
-          <Lightformer
-            intensity={2}
-            position={[7, 3, 7]}
-            scale={[10, 10, 1]}
-          />
+          <Lightformer intensity={2} position={[7, 3, 7]} scale={[10, 10, 1]} />
           <Lightformer
             intensity={2}
             position={[-7, -3, 7]}
@@ -96,7 +99,7 @@ export function Scene() {
         </group>
       </Environment>
 
-      <AccumulativeShadows
+      {/* <AccumulativeShadows
         frames={10}
         toneMapped={true}
         alphaTest={0.9}
@@ -109,42 +112,98 @@ export function Scene() {
         <RandomizedLight
           intensity={1}
           position={[0, 10, -10]}
-          amount={4}
+          amount={1}
           radius={10}
           ambient={0.5}
           size={15}
           mapSize={1024}
           bias={0.0001}
         />
-      </AccumulativeShadows>
+      </AccumulativeShadows> */}
     </>
   );
 }
 
-function Char({ splitChar, color, textProperties, properties, ...props }) {
+function Char({
+  splitChar,
+  color,
+  // position,
+  // vec = new THREE.Vector3(),
+  scale,
+  textProperties,
+  properties,
+  ...props
+}) {
   const texture = useLoader(RGBELoader, HDRtexture);
 
   // const main = useRef();
   // const controls = useThree((state) => state.controls);
-
+  // const api = useRef();
+  const ref = useRef();
+  // const pos = useMemo(() => position , []);
+  // useFrame((state, delta) => {
+  //   delta = Math.min(0.1, delta);
+  //   api.current?.applyImpulse(
+  //     vec.copy(api.current.translation()).negate().multiplyScalar(0.2)
+  //   );
+  //   // easing.dampC(ref.current.material.color, color, 0.2, delta);
+  // });
+  const push=() =>{
+    if (ref.current) {     
+      const random = 9 * Math.random()
+      ref.current.applyImpulseAtPoint({x:0, y:0, z:15}, {x:random, y:random, z:random}, true)
+    }
+  }
   return (
-    <RigidBody restitution={0.1} colliders="cuboid" {...props}>
-      <Center scale={[1, 1, 1]} front top>
-        <Text3D
-          // onDoubleClick={(e) => (
-          //   e.stopPropagation(), controls.fitToBox(main.current, true)
-          // )}
-          {...textProperties}
-        >
-          {splitChar}
+    <RigidBody
+      restitution={0}
+      colliders="cuboid"
+      linearDamping={5}
+      angularDamping={1}
+      friction={0.1}
+      ref={ref}
 
-          <MeshTransmissionMaterial
-            {...properties}
-            color={color}
-            background={texture}
-          />
-        </Text3D>
+      // position={pos}
+      // ref={api}
+      {...props}
+    >
+      <Center scale={[1, 1, 1]} front>
+      <Text3D
+        onClick={push}
+        {...textProperties}
+      >
+        {splitChar}
+
+        <MeshTransmissionMaterial
+          {...properties}
+          color={color}
+          background={texture}
+        />
+      </Text3D>
       </Center>
+    </RigidBody>
+  );
+}
+
+function Pointer({ vec = new THREE.Vector3() }) {
+  const ref = useRef();
+  useFrame(({ mouse, viewport }) =>
+    ref.current?.setNextKinematicTranslation(
+      vec.set(
+        (mouse.x * viewport.width) / 2,
+        (mouse.y * viewport.height) / 2,
+        0
+      )
+    )
+  );
+  return (
+    <RigidBody
+      position={[0, 0, 0]}
+      type="kinematicPosition"
+      colliders={false}
+      ref={ref}
+    >
+      <BallCollider args={[1]} />
     </RigidBody>
   );
 }

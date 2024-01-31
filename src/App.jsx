@@ -9,13 +9,13 @@ const App = () => {
     <Canvas
       shadows
       orthographic
-      camera={{ position: [0, 10, 15], zoom: 60 }}
+      camera={{ position: [0, 0, 15], zoom: 40 }}
       gl={{ preserveDrawingBuffer: true }}
     >
       <OrbitControls
         zoomSpeed={0.5}
-        minZoom={40}
-        maxZoom={140}
+        minZoom={20}
+        maxZoom={240}
         enablePan={true}
         dampingFactor={0.05}
         // minPolarAngle={Math.PI / 3}
