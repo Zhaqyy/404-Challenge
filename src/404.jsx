@@ -33,20 +33,44 @@ export function Scene() {
     distortionScale: 0.6,
     temporalDistortion: 0,
   };
-
+  let textProperties = {
+    font: font,
+    castShadow: true,
+    scale: 5,
+    height: 0.25,
+    letterSpacing: -0.03,
+    bevelEnabled: true,
+    bevelSize: 0.01,
+    bevelSegments: 10,
+    bevelThickness: 0.01,
+    curveSegments: 128,
+  };
   return (
     <>
       <Perf position="top-left" />
       <color attach="background" args={["#895757"]} />
 
       <Physics gravity={[0, 0, 0]}>
-        <Char splitChar="4" position={[-7, 0, -4]} properties={properties} color={"#3fde00"} />
-        <Char splitChar="4" position={[7, 0, 2]} properties={properties} color={"#3fde00"} />
+        <Char
+          splitChar="4"
+          position={[-7, 0, -4]}
+          properties={properties}
+          textProperties={textProperties}
+          color={"#3fde00"}
+        />
+        <Char
+          splitChar="4"
+          position={[7, 0, 2]}
+          properties={properties}
+          textProperties={textProperties}
+          color={"#3fde00"}
+        />
         <Char
           splitChar="0"
           position={[0, 0, 2]}
-          scale= {1.5}
-          properties={(properties)}
+          scale={[1.5, 1, 0.7]}
+          properties={properties}
+          textProperties={textProperties}
           color={"#3f57f1"}
           rotation={[-Math.PI / 2, 0, 0]}
         />
@@ -54,18 +78,18 @@ export function Scene() {
       <Environment resolution={32}>
         <group rotation={[-Math.PI / 4, -0.5, 0]}>
           <Lightformer
-            intensity={20}
+            intensity={1}
             rotation-x={Math.PI / 2}
             position={[0, 7, -7]}
             scale={[10, 10, 1]}
           />
           <Lightformer
-            intensity={10}
+            intensity={2}
             position={[7, 3, 7]}
             scale={[10, 10, 1]}
           />
           <Lightformer
-            intensity={10}
+            intensity={2}
             position={[-7, -3, 7]}
             scale={[10, 10, 1]}
           />
@@ -97,7 +121,7 @@ export function Scene() {
   );
 }
 
-function Char({ splitChar, color, properties, ...props }) {
+function Char({ splitChar, color, textProperties, properties, ...props }) {
   const texture = useLoader(RGBELoader, HDRtexture);
 
   // const main = useRef();
@@ -110,20 +134,15 @@ function Char({ splitChar, color, properties, ...props }) {
           // onDoubleClick={(e) => (
           //   e.stopPropagation(), controls.fitToBox(main.current, true)
           // )}
-          font={font}
-          castShadow
-          scale={5}
-          height={0.25}
-          letterSpacing={-0.03}
-          bevelEnabled
-          bevelSize={0.01}
-          bevelSegments={10}
-          bevelThickness={0.01}
-          curveSegments={128}
+          {...textProperties}
         >
           {splitChar}
 
-          <MeshTransmissionMaterial {...properties} color={color} background={texture} />
+          <MeshTransmissionMaterial
+            {...properties}
+            color={color}
+            background={texture}
+          />
         </Text3D>
       </Center>
     </RigidBody>
