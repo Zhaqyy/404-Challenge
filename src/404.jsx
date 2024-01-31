@@ -9,6 +9,7 @@ import {
   RandomizedLight,
   AccumulativeShadows,
   MeshTransmissionMaterial,
+  useEnvironment,
 } from "@react-three/drei";
 import { Perf } from "r3f-perf";
 import {
@@ -18,7 +19,7 @@ import {
   BallCollider,
 } from "@react-three/rapier";
 import { RGBELoader } from "three-stdlib";
-import HDRtexture from "./assets/studio.hdr";
+import HDRtexture from "/studio.hdr";
 import font from "./assets/Inter_Medium_Regular.json";
 
 export function Scene() {
@@ -51,10 +52,13 @@ export function Scene() {
     bevelThickness: 0.01,
     curveSegments: 128,
   };
+
+  const env = useEnvironment({files: HDRtexture})
+
   return (
     <>
       <Perf position="top-left" />
-      <color attach="background" args={["#895757"]} />
+      {/* <color attach="background" args={["#fffff"]} /> */}
 
       <Physics gravity={[0, 0, 0]}>
         {/* <Pointer /> */}
@@ -82,7 +86,8 @@ export function Scene() {
           // rotation={[-Math.PI / 2, 0, 0]}
         />
       </Physics>
-      <Environment resolution={32}>
+
+      <Environment resolution={16} map={env} background blur={1}>
         <group rotation={[-Math.PI / 4, -0.5, 0]}>
           <Lightformer
             intensity={1}
@@ -148,12 +153,17 @@ function Char({
   //   );
   //   // easing.dampC(ref.current.material.color, color, 0.2, delta);
   // });
-  const push=() =>{
-    if (ref.current) {     
-      const random = 9 * Math.random()
-      ref.current.applyImpulseAtPoint({x:0, y:0, z:15}, {x:random, y:random, z:random}, true)
+
+  const push = () => {
+    if (ref.current) {
+      const random = 9 * Math.random();
+      ref.current.applyImpulseAtPoint(
+        { x: 0, y: 0, z: 15 },
+        { x: random, y: random, z: random },
+        true
+      );
     }
-  }
+  };
   return (
     <RigidBody
       restitution={0}
@@ -162,24 +172,20 @@ function Char({
       angularDamping={1}
       friction={0.1}
       ref={ref}
-
       // position={pos}
       // ref={api}
       {...props}
     >
       <Center scale={[1, 1, 1]} front>
-      <Text3D
-        onClick={push}
-        {...textProperties}
-      >
-        {splitChar}
+        <Text3D onClick={push} {...textProperties}>
+          {splitChar}
 
-        <MeshTransmissionMaterial
-          {...properties}
-          color={color}
-          background={texture}
-        />
-      </Text3D>
+          <MeshTransmissionMaterial
+            {...properties}
+            color={color}
+            background={texture}
+          />
+        </Text3D>
       </Center>
     </RigidBody>
   );

@@ -8,8 +8,10 @@ const App = () => {
   return (
     <Canvas
       shadows
-      orthographic
-      camera={{ position: [0, 0, 15], zoom: 40 }}
+      // orthographic
+      camera={{ position: [0, 0, 15]
+        // , zoom: 40 
+      }}
       gl={{ preserveDrawingBuffer: true }}
     >
       <OrbitControls
