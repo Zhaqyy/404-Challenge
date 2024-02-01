@@ -10,6 +10,7 @@ import {
   AccumulativeShadows,
   MeshTransmissionMaterial,
   useEnvironment,
+  useTexture,
 } from "@react-three/drei";
 import { Perf } from "r3f-perf";
 import {
@@ -20,6 +21,7 @@ import {
 } from "@react-three/rapier";
 import { RGBELoader } from "three-stdlib";
 import HDRtexture from "/studio.hdr";
+// import HDRtexture from "/night.hdr";
 import font from "./assets/Inter_Medium_Regular.json";
 import Model from "./Model";
 
@@ -246,23 +248,28 @@ export function Scene() {
       <Perf position="top-left" />
       {/* <color attach="background" args={["#fffff"]} /> */}
 
-      <Environment resolution={16} map={env} background blur={1}>
-        <group rotation={[-Math.PI / 4, -0.5, 0]}>
+      <Environment resolution={16} 
+      map={env} 
+      background
+       blur={1}
+       >
+        <group >
           <Lightformer
-            intensity={1}
+            intensity={0.5}
             rotation-x={Math.PI / 2}
             position={[0, 7, -7]}
             scale={[10, 10, 1]}
           />
-          <Lightformer intensity={2} position={[7, 3, 7]} scale={[10, 10, 1]} />
+          <Lightformer intensity={0.5} position={[7, 3, 7]} scale={[10, 10, 1]} />
           <Lightformer
-            intensity={2}
+            intensity={0.5}
             position={[-7, -3, 7]}
             scale={[10, 10, 1]}
           />
         </group>
       </Environment>
       <Model />
+   
       {/* <AccumulativeShadows
         frames={10}
         toneMapped={true}
