@@ -1,4 +1,4 @@
-import { useRef, useMemo } from "react";
+import { useRef, useMemo, useState } from "react";
 import * as THREE from "three";
 import { useLoader, useFrame, useThree } from "@react-three/fiber";
 import {
@@ -11,6 +11,8 @@ import {
   MeshTransmissionMaterial,
   useEnvironment,
   useTexture,
+  Reflector,
+  MeshReflectorMaterial,
 } from "@react-three/drei";
 import { Perf } from "r3f-perf";
 import {
@@ -24,6 +26,7 @@ import HDRtexture from "/studio.hdr";
 // import HDRtexture from "/night.hdr";
 import font from "./assets/Inter_Medium_Regular.json";
 import Model from "./Model";
+import Ocean from "./water";
 
 // export function Scene() {
 //   let properties = {
@@ -246,21 +249,24 @@ export function Scene() {
   return (
     <>
       <Perf position="top-left" />
-      {/* <color attach="background" args={["#fffff"]} /> */}
+      <color attach="background" args={["#17171b"]} />
+      <fog attach="fog" args={["#17171b", 3, 7]} />
 
-      <Environment resolution={16} 
-      map={env} 
-      background
-       blur={1}
-       >
-        <group >
+      <Environment resolution={16} map={env} 
+      // background 
+      blur={1}>
+        <group>
           <Lightformer
             intensity={0.5}
             rotation-x={Math.PI / 2}
             position={[0, 7, -7]}
             scale={[10, 10, 1]}
           />
-          <Lightformer intensity={0.5} position={[7, 3, 7]} scale={[10, 10, 1]} />
+          <Lightformer
+            intensity={0.5}
+            position={[7, 3, 7]}
+            scale={[10, 10, 1]}
+          />
           <Lightformer
             intensity={0.5}
             position={[-7, -3, 7]}
@@ -269,7 +275,10 @@ export function Scene() {
         </group>
       </Environment>
       <Model />
-   
+      {/* <Ground />
+      <Intro/> */}
+      <Ocean/>
+
       {/* <AccumulativeShadows
         frames={10}
         toneMapped={true}
@@ -293,4 +302,42 @@ export function Scene() {
       </AccumulativeShadows> */}
     </>
   );
+}
+
+function Ground() {
+  const [floor, normal] = useTexture(["./waterdudv.jpg", "./waterdudv.jpg"]);
+  return (
+    // <Reflector  resolution={512} args={[10, 10]} mirror={1} mixBlur={1} mixStrength={1.5} rotation={[-Math.PI / 2, 0, Math.PI / 2]} roughnessMap={floor} normalMap={normal} normalScale={[2, 2]} distortionMap={floor} distortion={0.1}>
+    //   {(Material, props) => <Material color="#a0a0a0" metalness={0.1}  {...props} />}
+    // </Reflector>
+
+    <mesh rotation={[-Math.PI / 2, 0, 0]}>
+      <planeGeometry args={[10, 10]} />
+      <MeshReflectorMaterial
+        resolution={1024}
+        args={[10, 10]}
+        mirror={1}
+        mixBlur={1}
+        // blur={[1, 1]}
+        mixStrength={1.5}
+        roughnessMap={floor}
+        // normalMap={normal}
+        distortionMap={floor}
+        distortion={1}
+        // roughness={1}
+        metalness={1}
+      />
+    </mesh>
+  );
+}
+
+function Intro() {
+  const [vec] = useState(() => new THREE.Vector3());
+  return useFrame((state) => {
+    state.camera.position.lerp(
+      vec.set(state.mouse.x * 0.5, 1.5 + state.mouse.y * 0.25, 2),
+      0.01
+    );
+    state.camera.lookAt(0, 0, 0);
+  });
 }
