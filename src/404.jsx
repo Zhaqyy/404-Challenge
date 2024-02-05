@@ -283,31 +283,10 @@ export function Scene() {
         </group>
       </Environment>
       <Model />
-      <Ground />
+      <Ground/>
       {/* <Intro/> */}
       {/* <Ocean /> */}
 
-      {/* <AccumulativeShadows
-        frames={10}
-        toneMapped={true}
-        alphaTest={0.9}
-        color={"#250d75"}
-        colorBlend={5}
-        opacity={1}
-        scale={30}
-        position={[0, -1.01, 0]}
-      >
-        <RandomizedLight
-          intensity={1}
-          position={[0, 10, -10]}
-          amount={1}
-          radius={10}
-          ambient={0.5}
-          size={15}
-          mapSize={1024}
-          bias={0.0001}
-        />
-      </AccumulativeShadows> */}
     </>
   );
 }
@@ -324,8 +303,22 @@ function MovingSpot({ vec = new Vector3(), ...props }) {
 
 function Ground() {
   const [floor, normal] = useTexture(["./floor_Normal.jpg", "./floor.jpg"]);
+
+  
+  const planeRef = useRef();
+
+  useFrame(({ clock }) => {
+    const rotationSpeed = 0.05;
+
+    // Update the plane's rotation
+    if (planeRef.current) {
+      planeRef.current.rotation.z = clock.elapsedTime * rotationSpeed;
+    }
+  });
+
   return (
     <Reflector
+    ref={planeRef}
       resolution={512}
       args={[10, 10]}
       mirror={1}
@@ -333,8 +326,8 @@ function Ground() {
       // mixStrength={1.5}
       rotation={[-Math.PI / 2, 0, Math.PI / 2]}
       distortionMap={floor}
-      distortion={0.5}
-      position={[0, 0.05, 0]}
+      distortion={0.9}
+      position={[0, 0.08, 0]}
     >
       {(Material, props) => (
         <Material
