@@ -1,5 +1,7 @@
 import { useRef, useMemo, useState } from "react";
 import * as THREE from "three";
+import { Vector3 } from 'three'
+
 import { useLoader, useFrame, useThree } from "@react-three/fiber";
 import {
   Center,
@@ -13,6 +15,8 @@ import {
   useTexture,
   Reflector,
   MeshReflectorMaterial,
+  SpotLight,
+  useDepthBuffer,
 } from "@react-three/drei";
 import { Perf } from "r3f-perf";
 import {
@@ -245,13 +249,16 @@ import Ocean from "./water";
 
 export function Scene() {
   const env = useEnvironment({ files: HDRtexture });
+  const depthBuffer = useDepthBuffer({ frames: 1 })
 
   return (
     <>
       <Perf position="top-left" />
       <color attach="background" args={["#17171b"]} />
-      <fog attach="fog" args={["#17171b", 5, 7]} />
+      <fog attach="fog" args={["#17171b", 3, 7]} />
       <ambientLight intensity={1} />
+      <MovingSpot depthBuffer={depthBuffer} color="#0c8cbf" position={[0, 5, -2]} />
+      <MovingSpot depthBuffer={depthBuffer} color="#ffdcbf" position={[0, 5, 2]} />
       {/* <spotLight position={[3, 3, 1]} intensity={15} penumbra={0.2} /> */}
       {/* <directionalLight position={[0, 0.5, 0]} intensity={0.5} /> */}
       <Environment
@@ -267,7 +274,7 @@ export function Scene() {
             position={[0, 7, -7]}
             scale={[10, 10, 1]}
           />
-          <Lightformer intensity={2} position={[0, 0, 5]} scale={[10, 10, 1]} />
+          <Lightformer intensity={0.2} position={[0, 0, 5]} scale={[10, 10, 1]} />
           <Lightformer
             intensity={0.5}
             position={[-7, -3, 7]}
@@ -303,6 +310,16 @@ export function Scene() {
       </AccumulativeShadows> */}
     </>
   );
+}
+
+function MovingSpot({ vec = new Vector3(), ...props }) {
+  const light = useRef()
+  // const viewport = useThree((state) => state.viewport)
+  // useFrame((state) => {
+  //   light.current.target.position.lerp(vec.set((state.mouse.x * viewport.width) / 2, (state.mouse.y * viewport.height) / 2, 0), 0.1)
+  //   light.current.target.updateMatrixWorld()
+  // })
+  return <SpotLight castShadow ref={light} penumbra={1} distance={6} angle={0.35} attenuation={5} anglePower={4} intensity={2} {...props} />
 }
 
 function Ground() {

@@ -44,18 +44,14 @@ export default function Model(props) {
             roughness={0.3}
           />
         </mesh>
-      </Float>
       <mesh
         castShadow
         receiveShadow
         geometry={nodes.Circle.geometry}
         material={nodes.Circle.material}
       />
-      {/* <mesh ref={ref} rotation={[ -Math.PI / 2, Math.PI /1.8, Math.PI / 2]} position={[-2, 1, -2]}>
-        <planeGeometry args={[10, 5, 128, 128]} />
-        <meshStandardMaterial {...wTexture} />
-      </mesh>
-      <Clone object={ref} position={[2, 1, 2]} /> */}
+      </Float>
+
     </group>
   );
 }
