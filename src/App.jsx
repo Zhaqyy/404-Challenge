@@ -9,8 +9,8 @@ const App = () => {
     <Canvas
       shadows
       // orthographic
-      camera={{ position: [0, 1.5, 2]
-        // , zoom: 40 
+      camera={{ position: [-0.8, 1.25, 2.45]
+        // , zoom: 150 
       }}
       gl={{ preserveDrawingBuffer: true }}
     >

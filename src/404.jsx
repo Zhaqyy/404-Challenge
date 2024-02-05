@@ -250,23 +250,24 @@ export function Scene() {
     <>
       <Perf position="top-left" />
       <color attach="background" args={["#17171b"]} />
-      <fog attach="fog" args={["#17171b", 3, 7]} />
-
-      <Environment resolution={16} map={env} 
-      // background 
-      blur={1}>
+      <fog attach="fog" args={["#17171b", 5, 7]} />
+      <ambientLight intensity={1} />
+      {/* <spotLight position={[3, 3, 1]} intensity={15} penumbra={0.2} /> */}
+      {/* <directionalLight position={[0, 0.5, 0]} intensity={0.5} /> */}
+      <Environment
+        resolution={16}
+        // map={env}
+        // background
+        blur={1}
+      >
         <group>
           <Lightformer
-            intensity={0.5}
+            intensity={0.6}
             rotation-x={Math.PI / 2}
             position={[0, 7, -7]}
             scale={[10, 10, 1]}
           />
-          <Lightformer
-            intensity={0.5}
-            position={[7, 3, 7]}
-            scale={[10, 10, 1]}
-          />
+          <Lightformer intensity={2} position={[0, 0, 5]} scale={[10, 10, 1]} />
           <Lightformer
             intensity={0.5}
             position={[-7, -3, 7]}
@@ -275,9 +276,9 @@ export function Scene() {
         </group>
       </Environment>
       <Model />
-      {/* <Ground />
-      <Intro/> */}
-      <Ocean/>
+      <Ground />
+      {/* <Intro/> */}
+      {/* <Ocean /> */}
 
       {/* <AccumulativeShadows
         frames={10}
@@ -305,29 +306,48 @@ export function Scene() {
 }
 
 function Ground() {
-  const [floor, normal] = useTexture(["./waterdudv.jpg", "./waterdudv.jpg"]);
+  const [floor, normal] = useTexture(["./floor_Normal.jpg", "./floor.jpg"]);
   return (
-    // <Reflector  resolution={512} args={[10, 10]} mirror={1} mixBlur={1} mixStrength={1.5} rotation={[-Math.PI / 2, 0, Math.PI / 2]} roughnessMap={floor} normalMap={normal} normalScale={[2, 2]} distortionMap={floor} distortion={0.1}>
-    //   {(Material, props) => <Material color="#a0a0a0" metalness={0.1}  {...props} />}
-    // </Reflector>
+    <Reflector
+      resolution={512}
+      args={[10, 10]}
+      mirror={1}
+      mixBlur={1}
+      // mixStrength={1.5}
+      rotation={[-Math.PI / 2, 0, Math.PI / 2]}
+      distortionMap={floor}
+      distortion={0.5}
+      position={[0, 0.05, 0]}
+    >
+      {(Material, props) => (
+        <Material
+          color="#ffffff"
+          // metalness={0.3}
+          // roughness={0.7}
+          roughnessMap={floor}
+          normalMap={normal}
+          {...props}
+        />
+      )}
+    </Reflector>
 
-    <mesh rotation={[-Math.PI / 2, 0, 0]}>
-      <planeGeometry args={[10, 10]} />
-      <MeshReflectorMaterial
-        resolution={1024}
-        args={[10, 10]}
-        mirror={1}
-        mixBlur={1}
-        // blur={[1, 1]}
-        mixStrength={1.5}
-        roughnessMap={floor}
-        // normalMap={normal}
-        distortionMap={floor}
-        distortion={1}
-        // roughness={1}
-        metalness={1}
-      />
-    </mesh>
+    // <mesh rotation={[-Math.PI / 2, 0, 0]}>
+    //   <planeGeometry args={[10, 10]} />
+    //   <MeshReflectorMaterial
+    //     resolution={1024}
+    //     args={[10, 10]}
+    //     mirror={1}
+    //     mixBlur={1}
+    //     // blur={[1, 1]}
+    //     mixStrength={1.5}
+    //     roughnessMap={floor}
+    //     // normalMap={normal}
+    //     distortionMap={floor}
+    //     distortion={1}
+    //     // roughness={1}
+    //     metalness={1}
+    //   />
+    // </mesh>
   );
 }
 
@@ -335,9 +355,91 @@ function Intro() {
   const [vec] = useState(() => new THREE.Vector3());
   return useFrame((state) => {
     state.camera.position.lerp(
-      vec.set(state.mouse.x * 0.5, 1.5 + state.mouse.y * 0.25, 2),
+      vec.set(state.mouse.x * 0.5, 1.5 + state.mouse.y * 0.25, 5),
       0.01
     );
     state.camera.lookAt(0, 0, 0);
   });
 }
+
+{
+  /* <Frame
+  id="01"
+  name={`pick\nles`}
+  position={[-1.15, 0, 0]}
+  rotation={[0, 0.5, 0]}
+>
+  <Gltf
+    src="pickles_3d_version_of_hyuna_lees_illustration-transformed.glb"
+    scale={8}
+    position={[0, -0.7, -2]}
+  />
+</Frame>;
+
+function Portal({ id, name, children, ...props }) {
+  const portal = useRef();
+  const [, setLocation] = useLocation();
+  const [, params] = useRoute("/item/:id");
+  const [hovered, hover] = useState(false);
+  useCursor(hovered);
+
+  useFrame((state, dt) =>
+    easing.damp(portal.current, "blend", params?.id === id ? 1 : 0, 0.2, dt)
+  );
+
+  return (
+    <group {...props}>
+      <Text
+        font={suspend(medium).default}
+        fontSize={0.3}
+        anchorY="top"
+        anchorX="left"
+        lineHeight={0.8}
+        position={[-0.375, 0.715, 0.01]}
+        material-toneMapped={false}
+      >
+        {name}
+      </Text>
+      <Text
+        font={suspend(regular).default}
+        fontSize={0.1}
+        anchorX="right"
+        position={[0.4, -0.659, 0.01]}
+        material-toneMapped={false}
+      >
+        /{id}
+      </Text>
+      <mesh
+        name={id}
+        onDoubleClick={(e) => (e.stopPropagation(), setLocation("/home"))}
+        onPointerOver={(e) => hover(true)}
+        onPointerOut={() => hover(false)}
+      >
+        <circleGeometry args={[1, 16]} />
+        <MeshPortalMaterial
+          ref={portal}
+          transparent
+          blur={0.1}
+          events={params?.id === id}
+          side={THREE.DoubleSide}
+        >
+          <color attach="background" args={["#d1d1ca"]} />
+          <ambientLight intensity={0.7} />
+          {/* <Model
+            scale={0.15}
+            position={[0, -1, -10]}
+            rotation={[0, 0, 0]}
+            name="Roundcube001"
+            floatIntensity={100}
+          /> */
+}
+{
+  /* <Environment preset="dawn" background blur={envBlur} /> */
+}
+
+//           {children}
+//         </MeshPortalMaterial>
+//       </mesh>
+//     </group>
+//   );
+// } */}
