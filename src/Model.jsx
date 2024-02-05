@@ -36,7 +36,7 @@ export default function Model(props) {
           normalMapEncoding={LinearSRGBColorSpace}
         />
       </mesh>
-      <Float rotationIntensity={1.1} floatIntensity={1.1} speed={1}>
+      {/* <Float rotationIntensity={1.1} floatIntensity={1.1} speed={1}> */}
         <mesh castShadow receiveShadow geometry={nodes.PBody.geometry}>
           <meshStandardMaterial
             color={"#000000"}
@@ -44,13 +44,13 @@ export default function Model(props) {
             roughness={0.3}
           />
         </mesh>
-      <mesh
+      {/* <mesh
         castShadow
         receiveShadow
         geometry={nodes.Circle.geometry}
         material={nodes.Circle.material}
-      />
-      </Float>
+      /> */}
+      {/* </Float> */}
 
     </group>
   );

@@ -1,10 +1,11 @@
-import { useRef, useMemo, useState } from "react";
+import { useRef, useMemo, useState, Suspense, useEffect } from "react";
 import * as THREE from "three";
-import { Vector3 } from 'three'
+import { Vector3 } from "three";
 
 import { useLoader, useFrame, useThree } from "@react-three/fiber";
 import {
   Center,
+  Text,
   Text3D,
   Environment,
   Lightformer,
@@ -17,6 +18,7 @@ import {
   MeshReflectorMaterial,
   SpotLight,
   useDepthBuffer,
+  useCursor, MeshPortalMaterial,
 } from "@react-three/drei";
 import { Perf } from "r3f-perf";
 import {
@@ -26,8 +28,10 @@ import {
   BallCollider,
 } from "@react-three/rapier";
 import { RGBELoader } from "three-stdlib";
-import HDRtexture from "/studio.hdr";
-// import HDRtexture from "/night.hdr";
+import { useRoute, useLocation } from 'wouter'
+import { easing, geometry } from 'maath'
+// import HDRtexture from "/studio.hdr";
+import HDRtexture from "/night.hdr";
 import font from "./assets/Inter_Medium_Regular.json";
 import Model from "./Model";
 import Ocean from "./water";
@@ -249,7 +253,7 @@ import Ocean from "./water";
 
 export function Scene() {
   const env = useEnvironment({ files: HDRtexture });
-  const depthBuffer = useDepthBuffer({ frames: 1 })
+  const depthBuffer = useDepthBuffer({ frames: 1 });
 
   return (
     <>
@@ -257,10 +261,18 @@ export function Scene() {
       <color attach="background" args={["#17171b"]} />
       <fog attach="fog" args={["#17171b", 3, 7]} />
       <ambientLight intensity={1} />
-      <MovingSpot depthBuffer={depthBuffer} color="#0c8cbf" position={[0, 5, -2]} />
-      <MovingSpot depthBuffer={depthBuffer} color="#ffdcbf" position={[0, 5, 2]} />
+      <MovingSpot
+        depthBuffer={depthBuffer}
+        color="#0c8cbf"
+        position={[0, 5, -2]}
+      />
+      <MovingSpot
+        depthBuffer={depthBuffer}
+        color="#ffdcbf"
+        position={[0, 5, 2]}
+      />
       {/* <spotLight position={[3, 3, 1]} intensity={15} penumbra={0.2} /> */}
-      {/* <directionalLight position={[0, 0.5, 0]} intensity={0.5} /> */}
+      {/* <directionalLight position={[2, 0.5, 0]} intensity={1} scale={0.5} /> */}
       <Environment
         resolution={16}
         // map={env}
@@ -274,7 +286,11 @@ export function Scene() {
             position={[0, 7, -7]}
             scale={[10, 10, 1]}
           />
-          <Lightformer intensity={0.2} position={[0, 0, 5]} scale={[10, 10, 1]} />
+          <Lightformer
+            intensity={0.2}
+            position={[0, 0, 5]}
+            scale={[10, 10, 1]}
+          />
           <Lightformer
             intensity={0.5}
             position={[-7, -3, 7]}
@@ -282,29 +298,47 @@ export function Scene() {
           />
         </group>
       </Environment>
+      <Suspense>
+   <Portal
+  id="01"
+  name={`Home`}
+  position={[0, 0.68, -0.4]}
+  // rotation={[0, 0, 0]}
+/>
       <Model />
-      <Ground/>
+      <Ground />
+      </Suspense>
       {/* <Intro/> */}
       {/* <Ocean /> */}
-
     </>
   );
 }
 
 function MovingSpot({ vec = new Vector3(), ...props }) {
-  const light = useRef()
+  const light = useRef();
   // const viewport = useThree((state) => state.viewport)
   // useFrame((state) => {
   //   light.current.target.position.lerp(vec.set((state.mouse.x * viewport.width) / 2, (state.mouse.y * viewport.height) / 2, 0), 0.1)
   //   light.current.target.updateMatrixWorld()
   // })
-  return <SpotLight castShadow ref={light} penumbra={1} distance={6} angle={0.35} attenuation={5} anglePower={4} intensity={2} {...props} />
+  return (
+    <SpotLight
+      castShadow
+      ref={light}
+      penumbra={1}
+      distance={6}
+      angle={0.35}
+      attenuation={5}
+      anglePower={4}
+      intensity={2}
+      {...props}
+    />
+  );
 }
 
 function Ground() {
   const [floor, normal] = useTexture(["./floor_Normal.jpg", "./floor.jpg"]);
 
-  
   const planeRef = useRef();
 
   useFrame(({ clock }) => {
@@ -318,7 +352,7 @@ function Ground() {
 
   return (
     <Reflector
-    ref={planeRef}
+      ref={planeRef}
       resolution={512}
       args={[10, 10]}
       mirror={1}
@@ -365,26 +399,13 @@ function Intro() {
   const [vec] = useState(() => new THREE.Vector3());
   return useFrame((state) => {
     state.camera.position.lerp(
-      vec.set(state.mouse.x * 0.5, 1.5 + state.mouse.y * 0.25, 5),
+      vec.set(state.mouse.x * 0.5, 1.5 + state.mouse.y * 0.25, 3),
       0.01
     );
     state.camera.lookAt(0, 0, 0);
   });
 }
 
-{
-  /* <Frame
-  id="01"
-  name={`pick\nles`}
-  position={[-1.15, 0, 0]}
-  rotation={[0, 0.5, 0]}
->
-  <Gltf
-    src="pickles_3d_version_of_hyuna_lees_illustration-transformed.glb"
-    scale={8}
-    position={[0, -0.7, -2]}
-  />
-</Frame>;
 
 function Portal({ id, name, children, ...props }) {
   const portal = useRef();
@@ -397,43 +418,42 @@ function Portal({ id, name, children, ...props }) {
     easing.damp(portal.current, "blend", params?.id === id ? 1 : 0, 0.2, dt)
   );
 
+  const [video] = useState(() => Object.assign(document.createElement('video'), { src: '/energy.mp4', crossOrigin: 'Anonymous', loop: true, muted: true }))
+  useEffect(() => void video.play(), [video])
+// console.log(video);
   return (
     <group {...props}>
       <Text
-        font={suspend(medium).default}
-        fontSize={0.3}
-        anchorY="top"
-        anchorX="left"
-        lineHeight={0.8}
-        position={[-0.375, 0.715, 0.01]}
+        font={font}
+        fontSize={0.2}
+        anchorY="center"
+        anchorX="center"
+        // lineHeight={0.8}
+        position={[0, 0, 0.01]}
         material-toneMapped={false}
       >
         {name}
+        {/* <meshBasicMaterial>
+        <videoTexture attach="map" args={[video]} encoding={THREE.sRGBEncoding} />
+
+        </meshBasicMaterial> */}
       </Text>
-      <Text
-        font={suspend(regular).default}
-        fontSize={0.1}
-        anchorX="right"
-        position={[0.4, -0.659, 0.01]}
-        material-toneMapped={false}
-      >
-        /{id}
-      </Text>
+   
       <mesh
         name={id}
         onDoubleClick={(e) => (e.stopPropagation(), setLocation("/home"))}
         onPointerOver={(e) => hover(true)}
         onPointerOut={() => hover(false)}
       >
-        <circleGeometry args={[1, 16]} />
+        <circleGeometry args={[0.48, 16]} />
         <MeshPortalMaterial
           ref={portal}
           transparent
-          blur={0.1}
+          blur={0.15}
           events={params?.id === id}
-          side={THREE.DoubleSide}
+          // side={THREE.DoubleSide}
         >
-          <color attach="background" args={["#d1d1ca"]} />
+          {/* <color attach="background" args={["#d1d1ca"]} /> */}
           <ambientLight intensity={0.7} />
           {/* <Model
             scale={0.15}
@@ -441,15 +461,15 @@ function Portal({ id, name, children, ...props }) {
             rotation={[0, 0, 0]}
             name="Roundcube001"
             floatIntensity={100}
-          /> */
-}
-{
-  /* <Environment preset="dawn" background blur={envBlur} /> */
-}
+          /> */}
+          {/* <Environment preset="dawn" background blur={1} /> */}
+          {children}
+        </MeshPortalMaterial>
+        <meshBasicMaterial opacity={0.8} transparent>
+        <videoTexture attach="map" args={[video]} encoding={THREE.sRGBEncoding} />
 
-//           {children}
-//         </MeshPortalMaterial>
-//       </mesh>
-//     </group>
-//   );
-// } */}
+        </meshBasicMaterial>
+      </mesh>
+    </group>
+  );
+}
