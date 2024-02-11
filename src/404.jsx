@@ -1,38 +1,25 @@
-import { useRef, useMemo, useState, Suspense, useEffect } from "react";
+import { useRef, useState, Suspense } from "react";
 import * as THREE from "three";
 import { Vector3 } from "three";
 
-import { useLoader, useFrame, useThree } from "@react-three/fiber";
+import { useFrame } from "@react-three/fiber";
 import {
-  Center,
   Text,
-  Text3D,
   Environment,
   Lightformer,
-  RandomizedLight,
-  AccumulativeShadows,
-  MeshTransmissionMaterial,
   useEnvironment,
   useTexture,
   Reflector,
-  MeshReflectorMaterial,
   SpotLight,
   useDepthBuffer,
   useCursor,
   MeshPortalMaterial,
   Float,
-  CameraControls,
 } from "@react-three/drei";
 import { Perf } from "r3f-perf";
-import {
-  Physics,
-  RigidBody,
-  CuboidCollider,
-  BallCollider,
-} from "@react-three/rapier";
-import { RGBELoader } from "three-stdlib";
+
 import { useRoute, useLocation } from "wouter";
-import { easing, geometry } from "maath";
+import { easing } from "maath";
 // import HDRtexture from "/studio.hdr";
 // import HDRtexture from "/night.hdr";
 import PortalWorld from "/portal.jpg";
@@ -42,7 +29,7 @@ import Model from "./Model";
 export function Scene() {
   // const env = useEnvironment({ files: HDRtexture });
   const depthBuffer = useDepthBuffer({ frames: 1 });
-console.log(font);
+
   return (
     <>
       <Perf position="top-left" />
@@ -235,13 +222,10 @@ function Portal({ name, children, ...props }) {
           blur={0}
           events={params?.name === name}
         >
-          {/* <color attach="background" args={["#d1d1ca"]} /> */}
           <ambientLight intensity={0.3} />
 
-          {/* <Environment map={pMap} background /> */}
           <mesh 
           rotation={[-0.65, 7, Math.PI * 2]}
-          // position={[0,0,-15]}
           >
             <sphereGeometry args={[5, 32, 32]} />
             <meshBasicMaterial map={pMap} side={THREE.BackSide} />

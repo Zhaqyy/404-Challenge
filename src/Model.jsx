@@ -11,7 +11,6 @@ export default function Model(props) {
     roughnessMap: "arm_1k.jpg",
     metalnessMap: "arm_1k.jpg",
   });
-  const ref = useRef();
 
   const { nodes, materials } = useGLTF("./404Portalvalley.glb");
   return (
