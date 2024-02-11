@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { Clone, useGLTF, useTexture, Float } from "@react-three/drei";
+import { useGLTF, useTexture } from "@react-three/drei";
 import { LinearSRGBColorSpace } from "three";
 
 export default function Model(props) {
@@ -11,8 +11,6 @@ export default function Model(props) {
     roughnessMap: "arm_1k.jpg",
     metalnessMap: "arm_1k.jpg",
   });
-  // wTexture.flipY = false
-  // wTexture.MirroredRepeatWrapping = true
   const ref = useRef();
 
   const { nodes, materials } = useGLTF("./404Portalvalley.glb");
@@ -22,8 +20,12 @@ export default function Model(props) {
         castShadow
         receiveShadow
         geometry={nodes.hand.geometry}
-        material={materials.main}
-      />
+      >
+        <meshStandardMaterial
+          color={"#c68642"}
+          metalness={0.9}
+        />
+      </mesh>
       <mesh castShadow receiveShadow geometry={nodes.Lwall.geometry}>
         <meshStandardMaterial
           {...wTexture}
@@ -36,22 +38,12 @@ export default function Model(props) {
           normalMapEncoding={LinearSRGBColorSpace}
         />
       </mesh>
-      {/* <Float rotationIntensity={1.1} floatIntensity={1.1} speed={1}> */}
-        <mesh castShadow receiveShadow geometry={nodes.PBody.geometry}>
-          <meshStandardMaterial
-            color={"#000000"}
-            metalness={0.7}
-            roughness={0.3}
-          />
-        </mesh>
-      {/* <mesh
+      <mesh
         castShadow
         receiveShadow
-        geometry={nodes.Circle.geometry}
-        material={nodes.Circle.material}
-      /> */}
-      {/* </Float> */}
-
+        geometry={nodes.PBody.geometry}
+        material={materials.pbody}
+      />
     </group>
   );
 }

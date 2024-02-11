@@ -34,15 +34,13 @@ import { RGBELoader } from "three-stdlib";
 import { useRoute, useLocation } from "wouter";
 import { easing, geometry } from "maath";
 // import HDRtexture from "/studio.hdr";
-import HDRtexture from "/night.hdr";
+// import HDRtexture from "/night.hdr";
 import PortalWorld from "/portal.jpg";
-// import font from "./assets/Inter_Medium_Regular.json";
 import font from "./assets/MagicWand.ttf";
 import Model from "./Model";
-import Ocean from "./water";
 
 export function Scene() {
-  const env = useEnvironment({ files: HDRtexture });
+  // const env = useEnvironment({ files: HDRtexture });
   const depthBuffer = useDepthBuffer({ frames: 1 });
 console.log(font);
   return (
@@ -51,11 +49,14 @@ console.log(font);
       <color attach="background" args={["#17171b"]} />
       <fog attach="fog" args={["#17171b", 3, 7]} />
       <ambientLight intensity={1} />
-      <MovingSpot
+
+      ////Volumetric spotlight\\\\\
+      
+      {/* <MovingSpot
         depthBuffer={depthBuffer}
         color="#0c8cbf"
         position={[0, 5, -2]}
-      />
+      /> */}
       <MovingSpot
         depthBuffer={depthBuffer}
         color="#ffdcbf"
@@ -94,15 +95,12 @@ console.log(font);
         <Portal
           name={`Back Home`}
           position={[0, 0.68, -0.4]}
-          // rotation={[0, 0, 0]}
         />
 
-        <Rig/>
         <Model />
         <Ground />
       </Suspense>
-      {/* <Intro /> */}
-      {/* <Ocean /> */}
+      <CameraRig />
     </>
   );
 }
@@ -188,7 +186,7 @@ function Ground() {
   );
 }
 
-function Intro() {
+function CameraRig() {
   const [vec] = useState(() => new THREE.Vector3());
   return useFrame((state) => {
     state.camera.position.lerp(
@@ -268,24 +266,5 @@ function Portal({ name, children, ...props }) {
         </meshBasicMaterial> */}
       </mesh>
     </group>
-  );
-}
-
-function Rig({
-  position = new THREE.Vector3(-0.8, 1.25, 2.45),
-  focus = new THREE.Vector3(0, 0, 0),
-}) {
-  const { controls, scene } = useThree();
-  const [, params] = useRoute("/:name");
-  useEffect(() => {
-    const active = scene.getObjectByName(params?.name);
-    if (active) {
-      active.parent.localToWorld(position.set(0, 0.5, 0.25));
-      active.parent.localToWorld(focus.set(0, 0, -2));
-    }
-    controls?.setLookAt(...position.toArray(), ...focus.toArray(), true);
-  });
-  return (
-    <CameraControls makeDefault minPolarAngle={0} maxPolarAngle={Math.PI / 2} />
   );
 }

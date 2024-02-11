@@ -15,7 +15,7 @@ const App = () => {
       }}
       gl={{ preserveDrawingBuffer: true }}
     >
-      <OrbitControls
+      {/* <OrbitControls
         zoomSpeed={0.5}
         minZoom={20}
         maxZoom={240}
@@ -23,7 +23,7 @@ const App = () => {
         dampingFactor={0.05}
         // minPolarAngle={Math.PI / 3}
         // maxPolarAngle={Math.PI / 3}
-      />
+      /> */}
       <Scene />
       {/* <Room/> */}
       <Preload all />
