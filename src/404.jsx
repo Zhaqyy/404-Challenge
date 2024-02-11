@@ -18,7 +18,10 @@ import {
   MeshReflectorMaterial,
   SpotLight,
   useDepthBuffer,
-  useCursor, MeshPortalMaterial,
+  useCursor,
+  MeshPortalMaterial,
+  Float,
+  CameraControls,
 } from "@react-three/drei";
 import { Perf } from "r3f-perf";
 import {
@@ -28,228 +31,14 @@ import {
   BallCollider,
 } from "@react-three/rapier";
 import { RGBELoader } from "three-stdlib";
-import { useRoute, useLocation } from 'wouter'
-import { easing, geometry } from 'maath'
+import { useRoute, useLocation } from "wouter";
+import { easing, geometry } from "maath";
 // import HDRtexture from "/studio.hdr";
 import HDRtexture from "/night.hdr";
+import PortalWorld from "/portal.jpg";
 import font from "./assets/Inter_Medium_Regular.json";
 import Model from "./Model";
 import Ocean from "./water";
-
-// export function Scene() {
-//   let properties = {
-//     samples: 6,
-//     resolution: 64,
-//     // backside: true,
-//     // backsideThickness: 0.3,
-//     transmission: 0.5,
-//     roughness: 0,
-//     thickness: 0.3,
-//     chromaticAberration: 1,
-//     ior: 0.8,
-//     anisotropy: 0.3,
-//     clearcoat: 0,
-//     clearcoatRoughness: 0.0,
-//     distortion: 4,
-//     distortionScale: 1,
-//     temporalDistortion: 0.2,
-//   };
-//   let textProperties = {
-//     font: font,
-//     scale: 5,
-//     height: 0.25,
-//     letterSpacing: -0.03,
-//     bevelEnabled: true,
-//     bevelSize: 0.01,
-//     bevelSegments: 10,
-//     bevelThickness: 0.01,
-//     curveSegments: 128,
-//   };
-
-//   const env = useEnvironment({ files: HDRtexture });
-
-//   return (
-//     <>
-//       <Perf position="top-left" />
-//       {/* <color attach="background" args={["#fffff"]} /> */}
-
-//       <Physics gravity={[0, 0, 0]}>
-//         {/* <Pointer /> */}
-//         <Char
-//           splitChar="4"
-//           position={[-7, 4, 0]}
-//           properties={properties}
-//           textProperties={textProperties}
-//           color={"#3fde00"}
-//         />
-//         <Zero/>
-//         <Char
-//           splitChar="4"
-//           position={[7, -4, 0]}
-//           properties={properties}
-//           textProperties={textProperties}
-//           color={"#3fde00"}
-//         />
-//         {/* <Char
-//           splitChar="0"
-//           position={[0, 0, 0]}
-//           scale={[1.5, 1.5, 0.7]}
-//           properties={properties}
-//           textProperties={textProperties}
-//           color={"#3f57f1"}
-//           // rotation={[-Math.PI / 2, 0, 0]}
-//         /> */}
-//       </Physics>
-
-//       <Environment resolution={16} map={env} background blur={1}>
-//         <group rotation={[-Math.PI / 4, -0.5, 0]}>
-//           <Lightformer
-//             intensity={1}
-//             rotation-x={Math.PI / 2}
-//             position={[0, 7, -7]}
-//             scale={[10, 10, 1]}
-//           />
-//           <Lightformer intensity={2} position={[7, 3, 7]} scale={[10, 10, 1]} />
-//           <Lightformer
-//             intensity={2}
-//             position={[-7, -3, 7]}
-//             scale={[10, 10, 1]}
-//           />
-//         </group>
-//       </Environment>
-
-//       {/* <AccumulativeShadows
-//         frames={10}
-//         toneMapped={true}
-//         alphaTest={0.9}
-//         color={"#250d75"}
-//         colorBlend={5}
-//         opacity={1}
-//         scale={30}
-//         position={[0, -1.01, 0]}
-//       >
-//         <RandomizedLight
-//           intensity={1}
-//           position={[0, 10, -10]}
-//           amount={1}
-//           radius={10}
-//           ambient={0.5}
-//           size={15}
-//           mapSize={1024}
-//           bias={0.0001}
-//         />
-//       </AccumulativeShadows> */}
-//     </>
-//   );
-// }
-
-// function Char({
-//   splitChar,
-//   color,
-//   // position,
-//   // vec = new THREE.Vector3(),
-//   scale,
-//   textProperties,
-//   properties,
-//   ...props
-// }) {
-//   const texture = useLoader(RGBELoader, HDRtexture);
-
-//   // const main = useRef();
-//   // const controls = useThree((state) => state.controls);
-//   // const api = useRef();
-//   const ref = useRef();
-//   // const pos = useMemo(() => position , []);
-//   // useFrame((state, delta) => {
-//   //   delta = Math.min(0.1, delta);
-//   //   api.current?.applyImpulse(
-//   //     vec.copy(api.current.translation()).negate().multiplyScalar(0.2)
-//   //   );
-//   //   // easing.dampC(ref.current.material.color, color, 0.2, delta);
-//   // });
-
-//   const push = () => {
-//     if (ref.current) {
-//       const random = 9 * Math.random();
-//       ref.current.applyImpulseAtPoint(
-//         { x: 0, y: 0, z: 15 },
-//         { x: random, y: random, z: random },
-//         true
-//       );
-//     }
-//   };
-//   return (
-//     <RigidBody
-//       restitution={0}
-//       colliders="cuboid"
-//       linearDamping={5}
-//       angularDamping={1}
-//       friction={0.1}
-//       ref={ref}
-//       // position={pos}
-//       // ref={api}
-//       {...props}
-//     >
-//       <Center scale={[1, 1, 1]} front>
-//         <Text3D onClick={push} {...textProperties} castShadow>
-//           {splitChar}
-
-//           <MeshTransmissionMaterial
-//             {...properties}
-//             color={color}
-//             background={texture}
-//           />
-//         </Text3D>
-//       </Center>
-//     </RigidBody>
-//   );
-// }
-
-// export const Zero = () => {
-//   return (
-//     <Center scale={[1, 1, 1]} front>
-//     <Text3D
-//       font={font}
-//       castShadow
-//       scale={5}
-//       height={0.25}
-//       letterSpacing={-0.03}
-//       bevelEnabled
-//       bevelSize={0.01}
-//       bevelSegments={5}
-//       bevelThickness={0.01}
-//       curveSegments={32}
-//       position={[0, 0, 0]}
-//     >
-//       {0}
-//       <meshStandardMaterial roughness={0.2} metalness={0.8} color={"#3f57f1"}/>
-//     </Text3D>
-//     </Center>
-//   );
-// };
-
-// function Pointer({ vec = new THREE.Vector3() }) {
-//   const ref = useRef();
-//   useFrame(({ mouse, viewport }) =>
-//     ref.current?.setNextKinematicTranslation(
-//       vec.set(
-//         (mouse.x * viewport.width) / 2,
-//         (mouse.y * viewport.height) / 2,
-//         0
-//       )
-//     )
-//   );
-//   return (
-//     <RigidBody
-//       position={[0, 0, 0]}
-//       type="kinematicPosition"
-//       colliders={false}
-//       ref={ref}
-//     >
-//       <BallCollider args={[1]} />
-//     </RigidBody>
-//   );
-// }
 
 export function Scene() {
   const env = useEnvironment({ files: HDRtexture });
@@ -271,8 +60,7 @@ export function Scene() {
         color="#ffdcbf"
         position={[0, 5, 2]}
       />
-      {/* <spotLight position={[3, 3, 1]} intensity={15} penumbra={0.2} /> */}
-      {/* <directionalLight position={[2, 0.5, 0]} intensity={1} scale={0.5} /> */}
+
       <Environment
         resolution={16}
         // map={env}
@@ -285,30 +73,34 @@ export function Scene() {
             rotation-x={Math.PI / 2}
             position={[0, 7, -7]}
             scale={[10, 10, 1]}
+            visible={false}
           />
           <Lightformer
             intensity={0.2}
             position={[0, 0, 5]}
             scale={[10, 10, 1]}
+            visible={false}
           />
           <Lightformer
             intensity={0.5}
             position={[-7, -3, 7]}
             scale={[10, 10, 1]}
+            visible={false}
           />
         </group>
       </Environment>
       <Suspense>
-   <Portal
-  id="01"
-  name={`Home`}
-  position={[0, 0.68, -0.4]}
-  // rotation={[0, 0, 0]}
-/>
-      <Model />
-      <Ground />
+        <Portal
+          name={`Back Home`}
+          position={[0, 0.68, -0.4]}
+          // rotation={[0, 0, 0]}
+        />
+
+        {/* <Rig/> */}
+        <Model />
+        <Ground />
       </Suspense>
-      {/* <Intro/> */}
+      <Intro />
       {/* <Ocean /> */}
     </>
   );
@@ -357,7 +149,7 @@ function Ground() {
       args={[10, 10]}
       mirror={1}
       mixBlur={1}
-      // mixStrength={1.5}
+      mixStrength={1.5}
       rotation={[-Math.PI / 2, 0, Math.PI / 2]}
       distortionMap={floor}
       distortion={0.9}
@@ -406,42 +198,34 @@ function Intro() {
   });
 }
 
-
-function Portal({ id, name, children, ...props }) {
+function Portal({ name, children, ...props }) {
   const portal = useRef();
   const [, setLocation] = useLocation();
-  const [, params] = useRoute("/item/:id");
+  const [, params] = useRoute("/:name");
   const [hovered, hover] = useState(false);
   useCursor(hovered);
 
   useFrame((state, dt) =>
-    easing.damp(portal.current, "blend", params?.id === id ? 1 : 0, 0.2, dt)
+    easing.damp(portal.current, "blend", params?.name === name ? 1 : 0, 0.2, dt)
   );
+  const pMap = useTexture(PortalWorld);
+  // const [video] = useState(() =>
+  //   Object.assign(document.createElement("video"), {
+  //     src: "/energy.mp4",
+  //     crossOrigin: "Anonymous",
+  //     loop: true,
+  //     muted: true,
+  //   })
+  // );
+  // useEffect(() => void video.play(), [video]);
 
-  const [video] = useState(() => Object.assign(document.createElement('video'), { src: '/energy.mp4', crossOrigin: 'Anonymous', loop: true, muted: true }))
-  useEffect(() => void video.play(), [video])
-// console.log(video);
   return (
     <group {...props}>
-      <Text
-        font={font}
-        fontSize={0.2}
-        anchorY="center"
-        anchorX="center"
-        // lineHeight={0.8}
-        position={[0, 0, 0.01]}
-        material-toneMapped={false}
-      >
-        {name}
-        {/* <meshBasicMaterial>
-        <videoTexture attach="map" args={[video]} encoding={THREE.sRGBEncoding} />
-
-        </meshBasicMaterial> */}
-      </Text>
-   
       <mesh
-        name={id}
-        onDoubleClick={(e) => (e.stopPropagation(), setLocation("/home"))}
+        name={name}
+        onDoubleClick={(e) => (
+          e.stopPropagation(), setLocation("/" + e.object.name)
+        )}
         onPointerOver={(e) => hover(true)}
         onPointerOut={() => hover(false)}
       >
@@ -449,27 +233,57 @@ function Portal({ id, name, children, ...props }) {
         <MeshPortalMaterial
           ref={portal}
           transparent
-          blur={0.15}
-          events={params?.id === id}
-          // side={THREE.DoubleSide}
+          blur={0}
+          events={params?.name === name}
         >
           {/* <color attach="background" args={["#d1d1ca"]} /> */}
-          <ambientLight intensity={0.7} />
-          {/* <Model
-            scale={0.15}
-            position={[0, -1, -10]}
-            rotation={[0, 0, 0]}
-            name="Roundcube001"
-            floatIntensity={100}
-          /> */}
-          {/* <Environment preset="dawn" background blur={1} /> */}
-          {children}
+          <ambientLight intensity={0.3} />
+
+          {/* <Environment map={pMap} background /> */}
+          <mesh 
+          rotation={[-0.9, 7, Math.PI * 2]}
+          // position={[0,0,-15]}
+          >
+            <sphereGeometry args={[5, 32, 32]} />
+            <meshBasicMaterial map={pMap} side={THREE.BackSide} />
+          </mesh>
+          <Float rotationIntensity={0.2} floatIntensity={0.4} speed={1}>
+            <Text
+              font={font}
+              fontSize={0.4}
+              anchorY="center"
+              anchorX="center"
+              position={[0.5, -0.5, -3]}
+              material-toneMapped={false}
+            >
+              {name}
+            </Text>
+          </Float>
         </MeshPortalMaterial>
-        <meshBasicMaterial opacity={0.8} transparent>
+        {/* <meshBasicMaterial opacity={0.8} transparent>
         <videoTexture attach="map" args={[video]} encoding={THREE.sRGBEncoding} />
 
-        </meshBasicMaterial>
+        </meshBasicMaterial> */}
       </mesh>
     </group>
+  );
+}
+
+function Rig({
+  position = new THREE.Vector3(-0.8, 1.25, 2.45),
+  focus = new THREE.Vector3(0, 0, 0),
+}) {
+  const { controls, scene } = useThree();
+  const [, params] = useRoute("/:name");
+  useEffect(() => {
+    const active = scene.getObjectByName(params?.name);
+    if (active) {
+      active.parent.localToWorld(position.set(0, 0.5, 0.25));
+      active.parent.localToWorld(focus.set(0, 0, -2));
+    }
+    controls?.setLookAt(...position.toArray(), ...focus.toArray(), true);
+  });
+  return (
+    <CameraControls makeDefault minPolarAngle={0} maxPolarAngle={Math.PI / 2} />
   );
 }

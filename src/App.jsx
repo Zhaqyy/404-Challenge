@@ -3,6 +3,7 @@ import React, { useRef } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { Box, OrbitControls, Preload } from "@react-three/drei";
 import { Scene } from "./404";
+import { Room } from "./404Room";
 
 const App = () => {
   return (
@@ -24,6 +25,7 @@ const App = () => {
         // maxPolarAngle={Math.PI / 3}
       />
       <Scene />
+      {/* <Room/> */}
       <Preload all />
     </Canvas>
   );
