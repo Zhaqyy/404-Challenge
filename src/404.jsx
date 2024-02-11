@@ -36,14 +36,15 @@ import { easing, geometry } from "maath";
 // import HDRtexture from "/studio.hdr";
 import HDRtexture from "/night.hdr";
 import PortalWorld from "/portal.jpg";
-import font from "./assets/Inter_Medium_Regular.json";
+// import font from "./assets/Inter_Medium_Regular.json";
+import font from "./assets/MagicWand.ttf";
 import Model from "./Model";
 import Ocean from "./water";
 
 export function Scene() {
   const env = useEnvironment({ files: HDRtexture });
   const depthBuffer = useDepthBuffer({ frames: 1 });
-
+console.log(font);
   return (
     <>
       <Perf position="top-left" />
@@ -96,11 +97,11 @@ export function Scene() {
           // rotation={[0, 0, 0]}
         />
 
-        {/* <Rig/> */}
+        <Rig/>
         <Model />
         <Ground />
       </Suspense>
-      <Intro />
+      {/* <Intro /> */}
       {/* <Ocean /> */}
     </>
   );
@@ -206,7 +207,7 @@ function Portal({ name, children, ...props }) {
   useCursor(hovered);
 
   useFrame((state, dt) =>
-    easing.damp(portal.current, "blend", params?.name === name ? 1 : 0, 0.2, dt)
+    easing.damp(portal.current, "blend", params?.name === name ? 1 : 0, 0.25, dt)
   );
   const pMap = useTexture(PortalWorld);
   // const [video] = useState(() =>
@@ -241,7 +242,7 @@ function Portal({ name, children, ...props }) {
 
           {/* <Environment map={pMap} background /> */}
           <mesh 
-          rotation={[-0.9, 7, Math.PI * 2]}
+          rotation={[-0.65, 7, Math.PI * 2]}
           // position={[0,0,-15]}
           >
             <sphereGeometry args={[5, 32, 32]} />
@@ -250,10 +251,11 @@ function Portal({ name, children, ...props }) {
           <Float rotationIntensity={0.2} floatIntensity={0.4} speed={1}>
             <Text
               font={font}
-              fontSize={0.4}
+              fontSize={1.5}
+              color={'#0f0f00'}
               anchorY="center"
               anchorX="center"
-              position={[0.5, -0.5, -3]}
+              position={[0, -0, -4]}
               material-toneMapped={false}
             >
               {name}
