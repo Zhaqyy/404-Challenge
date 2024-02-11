@@ -32,7 +32,7 @@ export function Scene() {
 
   return (
     <>
-      <Perf position="top-left" />
+      {/* <Perf position="top-left" /> */}
       <color attach="background" args={["#17171b"]} />
       <fog attach="fog" args={["#17171b", 3, 7]} />
       <ambientLight intensity={1} />
@@ -80,7 +80,7 @@ export function Scene() {
       </Environment>
       <Suspense>
         <Portal
-          name={`Back Home`}
+          name={`Home`}
           position={[0, 0.68, -0.4]}
         />
 

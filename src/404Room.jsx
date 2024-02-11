@@ -23,10 +23,10 @@ import { Physics, RigidBody, BallCollider } from "@react-three/rapier";
 import { RGBELoader } from "three-stdlib";
 import HDRtexture from "/studio.hdr";
 // import HDRtexture from "/night.hdr";
-import PortalWorld from "/portal.jpg";
+// import PortalWorld from "/portal.jpg";
 import font from "./assets/Inter_Medium_Regular.json";
-import Model from "./Model";
-import Ocean from "./water";
+// import Model from "./Model";
+// import Ocean from "./water";
 
 export function Room() {
   let properties = {
