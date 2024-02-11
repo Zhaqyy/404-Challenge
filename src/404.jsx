@@ -141,7 +141,7 @@ function CameraRig() {
   const [vec] = useState(() => new THREE.Vector3());
   return useFrame((state) => {
     state.camera.position.lerp(
-      vec.set(state.mouse.x * 0.5, 1.5 + state.mouse.y * 0.25, 3),
+      vec.set(state.mouse.x * 0.37, 1.5 + state.mouse.y * 0.25, 3),
       0.01
     );
     state.camera.lookAt(0, 0, 0);
