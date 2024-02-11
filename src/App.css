@@ -1,6 +1,4 @@
-/* @import url('https://rsms.me/inter/inter.css'); */
 
-  @import url('https://fonts.googleapis.com/css2?family=Protest+Revolution&family=Protest+Riot&display=swap');
 * {
   box-sizing: border-box;
 }
@@ -19,8 +17,6 @@ body {
   overscroll-behavior-y: none;
   background: #f5f5f5;
   /* font-family: 'Magic', Inter, system-ui, Avenir, Helvetica, Arial, sans-serif; */
-  /* font-family: 'Protest Riot', sans-serif; */
-  /* font-family: 'Protest Revolution', sans-serif; */
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   color: b7b7b7;
@@ -28,7 +24,6 @@ body {
 
 a {
   color: b7b7b7;
-  /* font-family: 'Inter var', sans-serif; */
 }
 
 a {

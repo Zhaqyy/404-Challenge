@@ -2,12 +2,13 @@
   font-family: 'Magic';
   src: url('./assets/MagicWand.ttf') format('truetype');
 }
-
-/* @import url('https://fonts.googleapis.com/css2?family=Protest+Riot&display=swap'); */
+@font-face {
+  font-family: 'Riot';
+  src: url('./assets/ProtestRiot.ttf') format('truetype');
+}
 
 :root {
-  /* font-family: 'Magic',Inter, system-ui, Avenir, Helvetica, Arial, sans-serif; */
-  font-family: 'Protest Riot', sans-serif;
+  font-family: 'Riot','Magic',Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
   /* line-height: 1.5; */
   font-weight: 400;
 

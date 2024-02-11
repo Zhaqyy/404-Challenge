@@ -22,7 +22,7 @@ import { useRoute, useLocation } from "wouter";
 import { easing } from "maath";
 // import HDRtexture from "/studio.hdr";
 // import HDRtexture from "/night.hdr";
-import PortalWorld from "/portal.jpg";
+import PortalWorld from "/portal.webp";
 import font from "./assets/MagicWand.ttf";
 import Model from "./Model";
 
