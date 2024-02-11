@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React from "react";
 import { useGLTF, useTexture } from "@react-three/drei";
 import { LinearSRGBColorSpace } from "three";
 
@@ -16,8 +16,6 @@ export default function Model(props) {
   return (
     <group {...props} dispose={null}>
       <mesh
-        castShadow
-        receiveShadow
         geometry={nodes.hand.geometry}
       >
         <meshStandardMaterial
@@ -25,21 +23,19 @@ export default function Model(props) {
           metalness={0.9}
         />
       </mesh>
-      <mesh castShadow receiveShadow geometry={nodes.Lwall.geometry}>
+      <mesh geometry={nodes.Lwall.geometry}>
         <meshStandardMaterial
           {...wTexture}
           normalMapEncoding={LinearSRGBColorSpace}
         />
       </mesh>
-      <mesh castShadow receiveShadow geometry={nodes.Rwall.geometry}>
+      <mesh geometry={nodes.Rwall.geometry}>
         <meshStandardMaterial
           {...wTexture}
           normalMapEncoding={LinearSRGBColorSpace}
         />
       </mesh>
       <mesh
-        castShadow
-        receiveShadow
         geometry={nodes.PBody.geometry}
         material={materials.pbody}
       />

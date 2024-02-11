@@ -36,9 +36,7 @@ export function Scene() {
       <color attach="background" args={["#17171b"]} />
       <fog attach="fog" args={["#17171b", 3, 7]} />
       <ambientLight intensity={1} />
-
       ////Volumetric spotlight\\\\\
-      
       {/* <MovingSpot
         depthBuffer={depthBuffer}
         color="#0c8cbf"
@@ -49,13 +47,7 @@ export function Scene() {
         color="#ffdcbf"
         position={[0, 5, 2]}
       />
-
-      <Environment
-        resolution={16}
-        // map={env}
-        // background
-        blur={1}
-      >
+      <Environment resolution={16} blur={1}>
         <group>
           <Lightformer
             intensity={0.6}
@@ -79,10 +71,7 @@ export function Scene() {
         </group>
       </Environment>
       <Suspense>
-        <Portal
-          name={`Home`}
-          position={[0, 0.68, -0.4]}
-        />
+        <Portal name={"Home"} position={[0, 0.68, -0.4]} />
 
         <Model />
         <Ground />
@@ -94,11 +83,6 @@ export function Scene() {
 
 function MovingSpot({ vec = new Vector3(), ...props }) {
   const light = useRef();
-  // const viewport = useThree((state) => state.viewport)
-  // useFrame((state) => {
-  //   light.current.target.position.lerp(vec.set((state.mouse.x * viewport.width) / 2, (state.mouse.y * viewport.height) / 2, 0), 0.1)
-  //   light.current.target.updateMatrixWorld()
-  // })
   return (
     <SpotLight
       castShadow
@@ -144,32 +128,12 @@ function Ground() {
       {(Material, props) => (
         <Material
           color="#ffffff"
-          // metalness={0.3}
-          // roughness={0.7}
           roughnessMap={floor}
           normalMap={normal}
           {...props}
         />
       )}
     </Reflector>
-
-    // <mesh rotation={[-Math.PI / 2, 0, 0]}>
-    //   <planeGeometry args={[10, 10]} />
-    //   <MeshReflectorMaterial
-    //     resolution={1024}
-    //     args={[10, 10]}
-    //     mirror={1}
-    //     mixBlur={1}
-    //     // blur={[1, 1]}
-    //     mixStrength={1.5}
-    //     roughnessMap={floor}
-    //     // normalMap={normal}
-    //     distortionMap={floor}
-    //     distortion={1}
-    //     // roughness={1}
-    //     metalness={1}
-    //   />
-    // </mesh>
   );
 }
 
@@ -192,7 +156,13 @@ function Portal({ name, children, ...props }) {
   useCursor(hovered);
 
   useFrame((state, dt) =>
-    easing.damp(portal.current, "blend", params?.name === name ? 1 : 0, 0.25, dt)
+    easing.damp(
+      portal.current,
+      "blend",
+      params?.name === name ? 1 : 0,
+      0.25,
+      dt
+    )
   );
   const pMap = useTexture(PortalWorld);
   // const [video] = useState(() =>
@@ -224,9 +194,7 @@ function Portal({ name, children, ...props }) {
         >
           <ambientLight intensity={0.3} />
 
-          <mesh 
-          rotation={[-0.65, 7, Math.PI * 2]}
-          >
+          <mesh rotation={[-0.65, 7, Math.PI * 2]}>
             <sphereGeometry args={[5, 32, 32]} />
             <meshBasicMaterial map={pMap} side={THREE.BackSide} />
           </mesh>
@@ -234,7 +202,7 @@ function Portal({ name, children, ...props }) {
             <Text
               font={font}
               fontSize={1.5}
-              color={'#0f0f00'}
+              color={"#0f0f00"}
               anchorY="center"
               anchorX="center"
               position={[0, -0, -4]}
